@@ -17,10 +17,7 @@ class Command(BaseCommand):
         # Calculate rating for all channels with content and get channels with subchannels
         channels_ratings = Channel.objects.raw(
             "SELECT * "
-            "FROM media_platform_channel as mpc "
-            "JOIN media_platform_channel_sub_channels as mpcsc "
-            "ON mpc.id = mpcsc.from_channel_id "
-            "RIGHT JOIN ( "
+            "FROM ( "
             "	SELECT mpc.id as id_subchannel, mpc.title as title_subchannel, avg(mpcont.rating) as rating_subchannel "
             "	FROM media_platform_channel as mpc "
             "	JOIN media_platform_channel_content as mpcc "
@@ -29,7 +26,10 @@ class Command(BaseCommand):
             "	ON mpcc.content_id = mpcont.id "
             "	GROUP BY mpc.id "
             ") as group_content_rating "
-            "ON mpcsc.to_channel_id = group_content_rating.id_subchannel;"
+            "LEFT JOIN media_platform_channel_sub_channels as mpcsc "
+            "ON group_content_rating.id_subchannel = mpcsc.to_channel_id "
+            "LEFT JOIN media_platform_channel as mpc "
+            "ON mpcsc.from_channel_id = mpc.id;"
         )
 
         # Create pandas dataframe with recovered data
