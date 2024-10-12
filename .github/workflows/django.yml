@@ -7,8 +7,7 @@ on:
     branches: [ "master" ]
 
 env:
-  IMMFLYTEST_DJANGO_KEY: test_key
-  IMMFLYTEST_DJANGO_DEBUG: TRUE
+  IMMFLYTEST_DJANGO_KEY: ${{ secrets.IMMFLYTEST_DJANGO_KEY }}
 
 jobs:
   build:
