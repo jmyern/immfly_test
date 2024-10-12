@@ -8,6 +8,7 @@ on:
 
 env:
   IMMFLYTEST_DJANGO_KEY: test_key
+  IMMFLYTEST_DJANGO_DEBUG: TRUE
 
 jobs:
   build:
