@@ -14,49 +14,49 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         csv_path = options["path"]
 
-        # Calculate rating of channels with content
-        channels_with_content = Channel.objects.filter(sub_channels__isnull=True).annotate(average_rating=Avg('content__rating'))
-
-        # Calculate ratings of channels with sub channels
-        channels_with_subchannels = Channel.objects.raw(
-            "SELECT mpc_parent.id as id, avg(mpcont.rating) as average_rating, mpc_parent.title as title "
-            "FROM media_platform_channel as mpc_parent "
+        # Calculate rating for all channels with content and get channels with subchannels
+        channels_ratings = Channel.objects.raw(
+            "SELECT * "
+            "FROM media_platform_channel as mpc "
             "JOIN media_platform_channel_sub_channels as mpcsc "
-            "ON mpc_parent.id = mpcsc.from_channel_id "
-            "JOIN media_platform_channel as sub_mpc "
-            "ON mpcsc.to_channel_id = sub_mpc.id "
-            "JOIN media_platform_channel_content as mpcc "
-            "ON sub_mpc.id = mpcc.channel_id "
-            "JOIN media_platform_content as mpcont "
-            "ON mpcc.content_id = mpcont.id "
-            "GROUP BY mpc_parent.id;"
+            "ON mpc.id = mpcsc.from_channel_id "
+            "RIGHT JOIN ( "
+            "	SELECT mpc.id as id_subchannel, mpc.title as title_subchannel, avg(mpcont.rating) as rating_subchannel "
+            "	FROM media_platform_channel as mpc "
+            "	JOIN media_platform_channel_content as mpcc "
+            "	ON mpc.id = mpcc.channel_id  "
+            "	JOIN media_platform_content as mpcont  "
+            "	ON mpcc.content_id = mpcont.id "
+            "	GROUP BY mpc.id "
+            ") as group_content_rating "
+            "ON mpcsc.to_channel_id = group_content_rating.id_subchannel;"
         )
 
-        # Get list of all channels
-        channels = Channel.objects.all()
+        # Create pandas dataframe with recovered data
+        df = pd.DataFrame(
+            [(i.title, i.title_subchannel, i.rating_subchannel) for i in channels_ratings], columns=("title", "title_subchannel", "rating_subchannel")
+        )
 
-        # Join all information into a pandas dataframe
-        # Assumes all titles for channels are unique
+        # Get the average for channels with subchannels
+        average_channels_with_subchannels = df.groupby(["title"])["rating_subchannel"].mean()
+
+        # Get the average for channels with content
+        average_channels_with_content = df[["title_subchannel", "rating_subchannel"]].drop_duplicates()
+        average_channels_with_content = average_channels_with_content.rename(columns={"title_subchannel": "title", "rating_subchannel": "average_rating"})
+
+        # Create dataframe with final data
         df = pd.concat((
             pd.DataFrame(
-                [(i.title, i.average_rating) for i in channels_with_subchannels], columns=("title", "average_rating")
+                {
+                    "title": average_channels_with_subchannels.index,
+                    "average_rating": average_channels_with_subchannels.values
+                }, columns=("title", "average_rating")
             ),
-            pd.DataFrame(
-                [(i.title, i.average_rating) for i in channels_with_content], columns=("title", "average_rating")
-            ))
-        )
+            average_channels_with_content
+        ))
 
-        # Combine channels without rating
-        df.merge(
-            pd.DataFrame(
-                list(
-                    channels.values("title")
-                )
-            ), on="title"
-        )
-
-        # Sort values by average_rating
+        # Sort data by average descending
         df = df.sort_values("average_rating", ascending=False)
 
-        # Store in requested path
+        # Store result in selected path
         df.to_csv(csv_path, index=False)
