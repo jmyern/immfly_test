@@ -3,3 +3,5 @@ djangorestframework==3.15.2
 django-filter==24.3
 numpy==2.1.2
 pandas==2.2.3
+mypy==1.11.2
+pandas-stubs==2.2.3.241009
