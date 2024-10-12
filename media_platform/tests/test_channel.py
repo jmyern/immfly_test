@@ -20,7 +20,6 @@ class ChannelTestCase(TestCase):
             pass
 
     def test_channel_with_sub_channel_and_content(self):
-        # TODO: No se como crear el canal con contenido ya existente
         # Check that channels cannot have both sub channels and content
         content = Content(rating=5)
         content.save()

@@ -73,15 +73,15 @@ class ContentTestCase(TestCase):
             pass
 
     def test_channel_with_content(self):
-        self.assertEqual(self.df.loc[self.df['title'] == "channel with content"]["average_rating"].iloc[0], 5)
-        self.assertEqual(self.df.loc[self.df['title'] == "second channel with content"]["average_rating"].iloc[0], 4.5)
+        self.assertEqual(self.df.loc[self.df['channel title'] == "channel with content"]["average rating"].iloc[0], 5)
+        self.assertEqual(self.df.loc[self.df['channel title'] == "second channel with content"]["average rating"].iloc[0], 4.5)
 
     def test_channel_with_subchannels(self):
-        self.assertEqual(self.df.loc[self.df['title'] == "channel with subchannels"]["average_rating"].iloc[0], 5)
-        self.assertEqual(self.df.loc[self.df['title'] == "second channel with subchannels"]["average_rating"].iloc[0], 4.75)
+        self.assertEqual(self.df.loc[self.df['channel title'] == "channel with subchannels"]["average rating"].iloc[0], 5)
+        self.assertEqual(self.df.loc[self.df['channel title'] == "second channel with subchannels"]["average rating"].iloc[0], 4.75)
 
     def test_channel_with_subchannels_without_rating(self):
-        self.assertEqual(self.df.loc[self.df['title'] == "channel with subchannels without rating"]["average_rating"].iloc[0], 4.75)
+        self.assertEqual(self.df.loc[self.df['channel title'] == "channel with subchannels without rating"]["average rating"].iloc[0], 4.75)
 
     def test_order(self):
-        self.assertTrue(self.df["average_rating"].is_monotonic_decreasing)
+        self.assertTrue(self.df["average rating"].is_monotonic_decreasing)

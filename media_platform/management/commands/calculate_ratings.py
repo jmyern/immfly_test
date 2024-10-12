@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand, CommandError, CommandParser
 from media_platform.models import Channel
 from django.db.models import Avg
 import pandas as pd
@@ -8,7 +8,7 @@ import numpy as np
 class Command(BaseCommand):
     help = "Efficiently calculates rating for all channels"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser):
         parser.add_argument("path", type=str)
 
     def handle(self, *args, **options):
@@ -57,6 +57,9 @@ class Command(BaseCommand):
 
         # Sort data by average descending
         df = df.sort_values("average_rating", ascending=False)
+
+        # Rename columns
+        df = df.rename(columns={"title": "channel title", "average_rating": "average rating"})
 
         # Store result in selected path
         df.to_csv(csv_path, index=False)

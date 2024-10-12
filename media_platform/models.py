@@ -10,7 +10,7 @@ class ContentMetadata(models.Model):
     value = models.TextField()
     content = models.ForeignKey('Content', related_name="metadata", on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.key) + ": " + str(self.value)
 
 
@@ -19,7 +19,7 @@ class ContentFile(models.Model):
     media_file = models.FileField(upload_to=os.path.join("media_platform", "content"))
     content = models.ForeignKey('Content', related_name='files', on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.media_file)
 
 
@@ -38,6 +38,14 @@ class Channel(models.Model):
     picture = models.FileField(upload_to=os.path.join("media_platform", "picture"))
     sub_channels = models.ManyToManyField('Channel', blank=True)
     content = models.ManyToManyField('Content', blank=True)
+    groups = models.ManyToManyField('Group', blank=True)
 
-    def __str__(self):
-        return self.title
+    def __str__(self) -> str:
+        return str(self.title)
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return str(self.name)

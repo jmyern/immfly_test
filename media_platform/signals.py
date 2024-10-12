@@ -12,11 +12,10 @@ def check_content_rating_values(sender, instance: Content, **_):
 
 @receiver(post_save, sender=Channel)
 def check_channel_references(sender, instance: Channel, **_):
-    # Check that channel has at least one reference
-    # TODO: No puedo aplicar esta regla aun, necesito saber como crearlo con contenido
-    # if len(instance.sub_channels) == 0 and len(instance.content) == 0:
-    #     raise Exception(f"Channel {Channel.title} need a reference to another channel or content")
+    # WARNING: Should add a check so that you cannot create circular subchannels. May result in infinite loops.
 
     # Check that channel has either sub_channels or content
     if instance.sub_channels.count() > 0 and instance.content.count() > 0:
-        raise Exception(f"Channel {Channel.title} cannot have both sub_channels and content")
+        title = instance.title
+        instance.delete()
+        raise Exception(f"Channel {title} cannot have both sub_channels and content")
