@@ -58,7 +58,7 @@ ROOT_URLCONF = 'immfly.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'mysql.connector.django',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {

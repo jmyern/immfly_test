@@ -56,14 +56,15 @@ CI Actions have been created in .github/workflows. There are two different actio
 
 Can be run locally or through the docker image: ulisha/joan_immfly_interview.
 
-Through Docker, it runs with gunicorn through http.
+Through Docker, it runs with gunicorn.
 
 Static and Media files are cannot be recovered by default by simply running the container. To set this up, you need to set a proper production environment.
 
 To set a production environment, you should follow these steps:
 1. Create a shared folder with static and media content.
-2. Create a proper reverse proxy (Apache, Nginx, etc...) with certificates and access to this shared folder to serve static and media content.
-3. Set the reverse proxy to pass all petitions except /media/ and /static/ to this app.
+2. Run custom docker command to collect static data on the shared folder.
+3. Create a proper reverse proxy (Apache, Nginx, etc...) with certificates and access to this shared folder to serve static and media content.
+4. Set the reverse proxy to pass all petitions except /media/ and /static/ to this app.
 
 ## Parameters
 
@@ -75,3 +76,25 @@ Parameters are set through environment variables:
 - IMMFLYTEST_DB_PASSWORD: Password for MySQL. Not needed if IMMFLYTEST_DJANGO_DEBUG is TRUE, since it will use a local sqlite file instead of MySQL.
 - IMMFLYTEST_DB_HOST: Host of MySQL. Not needed if IMMFLYTEST_DJANGO_DEBUG is TRUE, since it will use a local sqlite file instead of MySQL.
 - IMMFLYTEST_DB_PORT (optional): Port of MySQL, defaults to 3306. Not needed if IMMFLYTEST_DJANGO_DEBUG is TRUE, since it will use a local sqlite file instead of MySQL.
+
+## Docker commands
+
+Run Webservice through gunicorn:
+```commandline
+docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview
+```
+
+Run tests
+```commandline
+docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview python manage.py test
+```
+
+Run migrate
+```commandline
+docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview python manage.py migrate
+```
+
+Run collect static
+```commandline
+docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview python manage.py collectstatic
+```
