@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import mysql.connector
 from pathlib import Path
 import os
 from typing import List, Any
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'immfly.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'mysql.connector.django',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -87,7 +87,7 @@ if DEBUG:
 else:
     DATABASES = {
         'default': {
-            'ENGINE'  : 'django.db.backends.mysql',
+            'ENGINE'  : 'mysql.connector.django',
             'NAME'    : os.environ["IMMFLYTEST_DB_NAME"],
             'USER'    : os.environ["IMMFLYTEST_DB_USER"],
             'PASSWORD': os.environ["IMMFLYTEST_DB_PASSWORD"],
