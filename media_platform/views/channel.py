@@ -21,6 +21,9 @@ class ChannelList(generics.ListAPIView):
 
     def filter_queryset(self, queryset: QuerySet) -> QuerySet:
         for key, value in self.request.query_params.items():
+            if key in ["format"]:
+                continue
+
             if key != "groups":
                 if value not in [None, ""]:
                     queryset = queryset.filter(**{key: value})
