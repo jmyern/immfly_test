@@ -81,20 +81,20 @@ Parameters are set through environment variables:
 
 Run Webservice through gunicorn:
 ```commandline
-docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview
+docker run --env-file env.list -p 80:8080 ulisha/joan_immfly_interview
 ```
 
 Run tests
 ```commandline
-docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview python manage.py test
+docker run --env-file env.list -p 80:8080 ulisha/joan_immfly_interview python manage.py test
 ```
 
 Run migrate
 ```commandline
-docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview python manage.py migrate
+docker run --env-file env.list -p 80:8080 ulisha/joan_immfly_interview python manage.py migrate
 ```
 
 Run collect static
 ```commandline
-docker run --env-file env.list -p 80:8080 ulisha/joan_immflky_interview python manage.py collectstatic
+docker run --env-file env.list -p 80:8080 ulisha/joan_immfly_interview python manage.py collectstatic
 ```
