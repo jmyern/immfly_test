@@ -5,7 +5,7 @@ from media_platform.models import Channel, Content
 class ChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
-        fields = ["title", "language", "picture", "sub_channels", "content"]
+        fields = ["id", "title", "language", "picture", "sub_channels", "content"]
 
 
 class ContentSerializer(serializers.ModelSerializer):
